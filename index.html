@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>恩语 · 个人主页</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(160deg,#f5f7ff 0%,#ffeef5 50%,#fff9e8 100%);
+    color:#2d2d44; min-height:100vh; overflow-x:hidden;
+  }
+  .wrap { max-width:900px; margin:0 auto; padding:40px 20px 60px; }
+
+  /* ===== 顶部装饰气泡 ===== */
+  .bubble { position:fixed; border-radius:50%; opacity:.18; animation:float 8s ease-in-out infinite; z-index:0; pointer-events:none; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-24px)} }
+
+  /* ===== Hero ===== */
+  .hero {
+    position:relative; z-index:1;
+    background:rgba(255,255,255,.85); backdrop-filter:blur(8px);
+    border-radius:28px; box-shadow:0 12px 40px rgba(102,126,234,.18);
+    display:flex; align-items:center; gap:36px; padding:44px 48px; flex-wrap:wrap;
+  }
+  .avatar {
+    width:120px; height:120px; border-radius:50%;
+    background:linear-gradient(135deg,#667eea,#e84393);
+    display:flex; align-items:center; justify-content:center;
+    font-size:56px; color:#fff; font-weight:800; flex-shrink:0;
+    box-shadow:0 8px 24px rgba(232,67,147,.35), inset 0 0 0 4px rgba(255,255,255,.5);
+  }
+  .hero-info h1 { font-size:42px; letter-spacing:4px; }
+  .hero-info h1 .gradient {
+    background:linear-gradient(90deg,#667eea,#e84393,#f0932b);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero-info .tagline { margin-top:10px; font-size:17px; color:#666; line-height:1.8; }
+  .hero-info .tags { margin-top:14px; display:flex; gap:8px; flex-wrap:wrap; }
+  .tag { font-size:13px; padding:5px 14px; border-radius:20px; color:#fff; font-weight:600; }
+  .tag.purple{background:#667eea}.tag.pink{background:#e84393}.tag.orange{background:#f0932b}.tag.blue{background:#0984e3}
+
+  /* ===== 区块标题 ===== */
+  .section { position:relative; z-index:1; margin-top:40px; }
+  .section h2 {
+    font-size:24px; margin-bottom:18px; display:flex; align-items:center; gap:10px;
+  }
+  .section h2::before { content:""; width:8px; height:26px; border-radius:4px;
+    background:linear-gradient(180deg,#667eea,#e84393); }
+
+  /* ===== 兴趣卡片 ===== */
+  .hobbies { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:18px; }
+  .hobby-card {
+    background:#fff; border-radius:20px; padding:24px; text-align:center;
+    box-shadow:0 6px 20px rgba(0,0,0,.07); transition:transform .25s, box-shadow .25s;
+    position:relative; overflow:hidden;
+  }
+  .hobby-card:hover { transform:translateY(-6px); box-shadow:0 14px 32px rgba(102,126,234,.22); }
+  .hobby-card .emoji { font-size:52px; display:inline-block; }
+  .hobby-card:hover .emoji { animation:wiggle .6s ease; }
+  @keyframes wiggle { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-12deg) scale(1.15)} 75%{transform:rotate(12deg) scale(1.15)} }
+  .hobby-card h3 { margin:10px 0 6px; font-size:19px; }
+  .hobby-card p { font-size:14px; color:#888; line-height:1.7; }
+  .hobby-card.cube { cursor:pointer; }
+
+  /* 足球弹跳 */
+  #football { animation:bounceBall 1.6s ease-in-out infinite; display:inline-block; }
+  @keyframes bounceBall { 0%,100%{transform:translateY(0) rotate(0)} 30%{transform:translateY(-18px) rotate(120deg)} 60%{transform:translateY(0) rotate(240deg)} }
+
+  /* ===== 魔方展示区 ===== */
+  .cube-showcase {
+    background:#fff; border-radius:20px; padding:30px; margin-top:18px;
+    box-shadow:0 6px 20px rgba(0,0,0,.07);
+    display:flex; align-items:center; gap:36px; flex-wrap:wrap; justify-content:center;
+  }
+  .cube-scene { width:130px; height:130px; perspective:600px; }
+  .cube3d { width:100%; height:100%; position:relative; transform-style:preserve-3d;
+    animation:spinCube 12s linear infinite; transform:rotateX(-20deg) rotateY(0deg); }
+  .cube-showcase:hover .cube3d { animation-play-state:paused; }
+  @keyframes spinCube { from{transform:rotateX(-20deg) rotateY(0)} to{transform:rotateX(-20deg) rotateY(360deg)} }
+  .face { position:absolute; width:130px; height:130px; display:grid;
+    grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(3,1fr);
+    gap:4px; padding:6px; background:#111; border-radius:8px; }
+  .face span { border-radius:4px; }
+  .face.front  { transform:translateZ(65px); }
+  .face.back   { transform:rotateY(180deg) translateZ(65px); }
+  .face.right  { transform:rotateY(90deg) translateZ(65px); }
+  .face.left   { transform:rotateY(-90deg) translateZ(65px); }
+  .face.top    { transform:rotateX(90deg) translateZ(65px); }
+  .face.bottom { transform:rotateX(-90deg) translateZ(65px); }
+  .sticker-w{background:#fff}.sticker-y{background:#ffd500}.sticker-r{background:#e33}
+  .sticker-o{background:#f80}.sticker-b{background:#06f}.sticker-g{background:#2c3}
+  .cube-text { flex:1; min-width:220px; }
+  .cube-text h3 { font-size:19px; margin-bottom:8px; }
+  .cube-text p { font-size:14.5px; color:#666; line-height:1.9; }
+  .cube-text .stat { display:inline-block; background:#f4f4fb; color:#667eea; font-weight:700;
+    padding:6px 14px; border-radius:10px; margin:8px 8px 0 0; font-size:13px; }
+
+  /* ===== 我的作品 ===== */
+  .work-card {
+    background:linear-gradient(135deg,#667eea,#764ba2); color:#fff;
+    border-radius:20px; padding:26px 28px; display:flex; align-items:center; gap:22px;
+    box-shadow:0 10px 30px rgba(102,126,234,.35); text-decoration:none;
+    transition:transform .25s; flex-wrap:wrap;
+  }
+  .work-card:hover { transform:scale(1.02); }
+  .work-card .icon { font-size:48px; }
+  .work-card h3 { font-size:19px; margin-bottom:6px; }
+  .work-card p { font-size:14px; opacity:.9; line-height:1.7; flex:1; }
+  .work-card .go { background:rgba(255,255,255,.25); padding:10px 20px; border-radius:12px;
+    font-weight:700; white-space:nowrap; }
+
+  /* ===== GitHub / 联系 ===== */
+  .links { display:flex; gap:14px; flex-wrap:wrap; }
+  .link-btn {
+    display:flex; align-items:center; gap:10px; background:#fff; border-radius:14px;
+    padding:14px 22px; text-decoration:none; color:#2d2d44; font-weight:600;
+    box-shadow:0 4px 14px rgba(0,0,0,.08); transition:transform .2s, box-shadow .2s;
+  }
+  .link-btn:hover { transform:translateY(-3px); box-shadow:0 8px 20px rgba(0,0,0,.14); }
+  .link-btn img { width:22px; height:22px; }
+
+  footer { text-align:center; margin-top:50px; color:#aaa; font-size:13px; position:relative; z-index:1; }
+  footer .heart { color:#e84393; }
+
+  @media (max-width:600px){
+    .hero { padding:30px 24px; gap:20px; }
+    .hero-info h1 { font-size:32px; }
+    .cube-scene { width:100px; height:100px; }
+    .face { width:100px; height:100px; }
+    .face.front{transform:translateZ(50px)} .face.back{transform:rotateY(180deg) translateZ(50px)}
+    .face.right{transform:rotateY(90deg) translateZ(50px)} .face.left{transform:rotateY(-90deg) translateZ(50px)}
+    .face.top{transform:rotateX(90deg) translateZ(50px)} .face.bottom{transform:rotateX(-90deg) translateZ(50px)}
+  }
+</style>
+</head>
+<body>
+  <!-- 漂浮装饰 -->
+  <div class="bubble" style="width:90px;height:90px;background:#667eea;top:8%;left:6%"></div>
+  <div class="bubble" style="width:60px;height:60px;background:#e84393;top:20%;right:10%;animation-delay:1s"></div>
+  <div class="bubble" style="width:120px;height:120px;background:#f0932b;bottom:10%;left:12%;animation-delay:2s"></div>
+  <div class="bubble" style="width:70px;height:70px;background:#00b894;bottom:24%;right:6%;animation-delay:.5s"></div>
+
+  <div class="wrap">
+    <!-- Hero -->
+    <div class="hero">
+      <div class="avatar">恩</div>
+      <div class="hero-info">
+        <h1>你好，我是<span class="gradient"> 恩语 </span>👋</h1>
+        <div class="tagline">
+          喜欢动手动脑，转得来魔方，跑得动球场。<br>
+          相信每一次旋转和每一脚传球，都是通往更好的自己的路。
+        </div>
+        <div class="tags">
+          <span class="tag purple">🧩 魔方玩家</span>
+          <span class="tag blue">⚽ 足球少年</span>
+          <span class="tag pink">🧪 化学爱好者</span>
+          <span class="tag orange">💻 会一点编程</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 兴趣爱好 -->
+    <div class="section">
+      <h2>🌟 我的兴趣爱好</h2>
+      <div class="hobbies">
+        <div class="hobby-card cube">
+          <span class="emoji">🧊</span>
+          <h3>玩魔方</h3>
+          <p>六面还原不在话下，<br>享受指尖飞转的快感</p>
+        </div>
+        <div class="hobby-card">
+          <span class="emoji" id="football">⚽</span>
+          <h3>踢足球</h3>
+          <p>绿茵场上撒欢奔跑，<br>进球的瞬间最快乐</p>
+        </div>
+        <div class="hobby-card">
+          <span class="emoji">🧪</span>
+          <h3>化学小实验</h3>
+          <p>奇妙的化学反应，<br>藏着世界的小秘密</p>
+        </div>
+      </div>
+
+      <!-- 3D 魔方展示 -->
+      <div class="cube-showcase">
+        <div class="cube-scene">
+          <div class="cube3d">
+            <div class="face front">
+              <span class="sticker-w"></span><span class="sticker-r"></span><span class="sticker-w"></span>
+              <span class="sticker-b"></span><span class="sticker-r"></span><span class="sticker-g"></span>
+              <span class="sticker-w"></span><span class="sticker-o"></span><span class="sticker-r"></span>
+            </div>
+            <div class="face back">
+              <span class="sticker-y"></span><span class="sticker-g"></span><span class="sticker-y"></span>
+              <span class="sticker-o"></span><span class="sticker-g"></span><span class="sticker-b"></span>
+              <span class="sticker-y"></span><span class="sticker-w"></span><span class="sticker-g"></span>
+            </div>
+            <div class="face right">
+              <span class="sticker-b"></span><span class="sticker-o"></span><span class="sticker-b"></span>
+              <span class="sticker-r"></span><span class="sticker-o"></span><span class="sticker-y"></span>
+              <span class="sticker-b"></span><span class="sticker-g"></span><span class="sticker-o"></span>
+            </div>
+            <div class="face left">
+              <span class="sticker-g"></span><span class="sticker-b"></span><span class="sticker-g"></span>
+              <span class="sticker-y"></span><span class="sticker-b"></span><span class="sticker-r"></span>
+              <span class="sticker-g"></span><span class="sticker-o"></span><span class="sticker-b"></span>
+            </div>
+            <div class="face top">
+              <span class="sticker-r"></span><span class="sticker-y"></span><span class="sticker-o"></span>
+              <span class="sticker-w"></span><span class="sticker-y"></span><span class="sticker-g"></span>
+              <span class="sticker-r"></span><span class="sticker-b"></span><span class="sticker-y"></span>
+            </div>
+            <div class="face bottom">
+              <span class="sticker-o"></span><span class="sticker-w"></span><span class="sticker-b"></span>
+              <span class="sticker-g"></span><span class="sticker-w"></span><span class="sticker-o"></span>
+              <span class="sticker-y"></span><span class="sticker-r"></span><span class="sticker-w"></span>
+            </div>
+          </div>
+        </div>
+        <div class="cube-text">
+          <h3>🎯 魔方小目标</h3>
+          <p>三阶魔方是我的主力玩具。打乱容易复原难，每一次还原都像解一道谜题。</p>
+          <span class="stat">🎯 目标：30 秒内还原</span>
+          <span class="stat">📚 下一步：学 CFOP 高级公式</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 我的作品 -->
+    <div class="section">
+      <h2>🎨 我的小作品</h2>
+      <a class="work-card" href="https://zhouenyu314.github.io/chem-memory-game/" target="_blank">
+        <span class="icon">🎮</span>
+        <div>
+          <h3>初中化学记忆大挑战</h3>
+          <p>我自己"出品"的化学学习游戏！翻牌配对记元素、60 秒化合价快答、方程式闯关……边玩边背，错题自动收进错题本。</p>
+        </div>
+        <span class="go">去玩一下 →</span>
+      </a>
+    </div>
+
+    <!-- 找到我 -->
+    <div class="section">
+      <h2>📬 找到我</h2>
+      <div class="links">
+        <a class="link-btn" href="https://github.com/zhouenyu314" target="_blank">
+          <svg viewBox="0 0 16 16" width="22" height="22" fill="#2d2d44"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub：zhouenyu314
+        </a>
+        <a class="link-btn" href="https://zhouenyu314.github.io" target="_blank">
+          🏠 我的主页
+        </a>
+      </div>
+    </div>
+
+    <footer>
+      用 <span class="heart">♥</span> 和好奇心上架 · 恩语 · 2026
+    </footer>
+  </div>
+
+<script>
+  /* 魔方卡片点击彩蛋：加速旋转 3 秒 */
+  document.querySelector('.hobby-card.cube').addEventListener('click', () => {
+    const cube = document.querySelector('.cube3d');
+    cube.style.animationDuration = '1.2s';
+    setTimeout(() => { cube.style.animationDuration = '12s'; }, 3000);
+  });
+  /* 足球点击彩蛋：飞出去再回来 */
+  document.getElementById('football').addEventListener('click', function(){
+    this.style.transition = 'transform .6s cubic-bezier(.3,1.4,.5,1)';
+    this.style.transform = 'translate(120px,-80px) rotate(720deg)';
+    setTimeout(() => { this.style.transform = 'translate(0,0) rotate(0)'; }, 650);
+  });
+</script>
+</body>
+</html>
